@@ -1,9 +1,75 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Pathfinding
 {
+    public IEnumerator DepthFirstSearch(Node startingNode, Node targetNode, float time)
+    {
+        if (startingNode == null) yield return default;
+
+        Stack<Node> frontier = new Stack<Node>();
+        frontier.Push(startingNode);
+
+        Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
+        cameFrom.Add(startingNode, null);
+
+        while (frontier.Count > 0)
+        {
+            GameManager.Instance.iterations++;
+
+            var current = frontier.Pop();
+
+            current.UpdateNodeCost(targetNode, startingNode);
+
+            if (current == targetNode)
+            {
+                foreach (var item in cameFrom)
+                {
+                    item.Key.GetComponent<Renderer>().material.color = Color.white;
+                }
+
+                List<Node> path = new List<Node>();
+                path.Add(current);
+                Node next = cameFrom[current];
+
+                while (next != null)
+                {
+                    path.Add(next);
+                    next = cameFrom[next];
+
+                    if (current == targetNode)
+                    {
+                        path.Reverse();
+
+                        GameManager.Instance.StopLoopAndDrawPath(path, Color.cyan);
+                    }
+                }
+            }
+
+            current.GetComponent<Renderer>().material.color = Color.green;
+
+            yield return new WaitForSeconds(time);
+
+
+            foreach (var item in current.GetAdjacentNeightbours())
+            {
+                if (!item.isWalkable) continue;
+
+                if (!cameFrom.ContainsKey(item))
+                {
+                    break;
+                    //frontier.Push(item);
+                    //cameFrom.Add(item, current);
+                    //item.GetComponent<Renderer>().material.color = Color.blue;
+                    //AudioManager.Instance.PlayAudio(Utils.Heuristic(item.transform.position, targetNode.transform.position));
+                }
+            }
+
+            current.GetComponent<Renderer>().material.color = Color.gray;
+        }
+    }
     public IEnumerator BreadthFirstSearch(Node startingNode, Node targetNode, float time)
     {
         if (startingNode == null) yield return default;
@@ -123,6 +189,11 @@ public class Pathfinding
 
                 if (!next.isWalkable) continue;
 
+                foreach (var item in cameFrom.Keys.ToList())
+                {
+                    item.GetComponent<Renderer>().material.color = Color.gray;
+                }
+
                 if (current != targetNode)
                 {
                     if (!cameFrom.ContainsKey(next))
@@ -135,11 +206,7 @@ public class Pathfinding
 
                     next.GetComponent<Renderer>().material.color = Color.blue;
                 }
-
-                current.GetComponent<Renderer>().material.color = Color.gray;
             }
-
-
             current.GetComponent<Renderer>().material.color = Color.green;
         }
     }
@@ -157,9 +224,14 @@ public class Pathfinding
         while (frontier.Count() > 0)
         {
             Node current = frontier.Get();
+
             current.UpdateNodeCost(targetNode, startingNode);
 
-            current.GetComponent<Renderer>().material.color = Color.green;
+            if (current != targetNode)
+            {
+                current.GetComponent<Renderer>().material.color = Color.green;
+            }
+
 
             yield return new WaitForSeconds(time);
 
@@ -194,6 +266,16 @@ public class Pathfinding
                 if (!next.isWalkable) continue;
 
                 int newCost = costSoFar[current] + next.gCost;
+
+                foreach (var item in costSoFar)
+                {
+                    item.Key.GetComponent<Renderer>().material.color = Color.gray;
+                }
+
+                foreach (var item in frontier.ReturnDictionaryToList())
+                {
+                    item.GetComponent<Renderer>().material.color = Color.blue;
+                }
 
                 if (current != targetNode)
                 {
@@ -239,6 +321,11 @@ public class Pathfinding
             Node current = frontier.Get();
 
             current.UpdateNodeCost(targetNode, startingNode);
+
+            if (current != targetNode)
+            {
+                current.GetComponent<Renderer>().material.color = Color.green;
+            }
 
             yield return new WaitForSeconds(time);
 
@@ -296,71 +383,6 @@ public class Pathfinding
                 }
                 current.GetComponent<Renderer>().material.color = Color.gray;
             }
-        }
-    }
-    public IEnumerator DepthFirstSearch(Node startingNode, Node targetNode, float time)
-    {
-        if (startingNode == null) yield return default;
-
-        Stack<Node> frontier = new Stack<Node>();
-        frontier.Push(startingNode);
-
-        Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
-        cameFrom.Add(startingNode, null);
-
-        while (frontier.Count > 0)
-        {
-            GameManager.Instance.iterations++;
-
-            var current = frontier.Pop();
-
-            current.UpdateNodeCost(targetNode, startingNode);
-
-            if (current == targetNode)
-            {
-                foreach (var item in cameFrom)
-                {
-                    item.Key.GetComponent<Renderer>().material.color = Color.white;
-                }
-
-                List<Node> path = new List<Node>();
-                path.Add(current);
-                Node next = cameFrom[current];
-
-                while (next != null)
-                {
-                    path.Add(next);
-                    next = cameFrom[next];
-
-                    if (current == targetNode)
-                    {
-                        path.Reverse();
-
-                        GameManager.Instance.StopLoopAndDrawPath(path, Color.cyan);
-                    }
-                }
-            }
-
-            current.GetComponent<Renderer>().material.color = Color.green;
-
-            yield return new WaitForSeconds(time);
-
-
-            foreach (var item in current.GetAdjacentNeightbours())
-            {
-                if (!item.isWalkable) continue;
-
-                if (!cameFrom.ContainsKey(item))
-                {
-                    break;
-                    //frontier.Push(item);
-                    //cameFrom.Add(item, current);
-                    //item.GetComponent<Renderer>().material.color = Color.blue;
-                    //AudioManager.Instance.PlayAudio(Utils.Heuristic(item.transform.position, targetNode.transform.position));
-                }
-            }
-
-            current.GetComponent<Renderer>().material.color = Color.gray;
         }
     }
 }

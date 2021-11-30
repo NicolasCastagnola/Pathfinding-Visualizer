@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI iterationDisplay;
     public TextMeshProUGUI buttonText;
+    public TextMeshProUGUI alertDisplay;
 
     private Algorithm algorithmType;
     public NodesType nodesType;
@@ -76,7 +77,7 @@ public class GameManager : MonoBehaviour
     public void RunSelectedAlgorithm()
     {
         iterations = 0;
-        
+
         if (startingNode != null && targetNode != null)
         {
             foreach (Node node in gridScript.ReturnAllGridToList())
@@ -87,6 +88,21 @@ public class GameManager : MonoBehaviour
                 {
                     ChangeColor(node.gameObject, Color.white);
                 }
+            }
+        }
+
+        else
+        {
+            if (startingNode == null)
+            {
+                StartCoroutine(TriggerErrorText("STARTING NODE"));
+                return;
+            }
+
+            if (targetNode == null)
+            {
+                StartCoroutine(TriggerErrorText("TARGET NODE"));
+                return;
             }
         }
 
@@ -176,6 +192,17 @@ public class GameManager : MonoBehaviour
             ChangeColor(startingNode.gameObject, Color.green);
             ChangeColor(targetNode.gameObject, Color.red);
         }
+    }
+
+    IEnumerator TriggerErrorText(string errorType)
+    {
+        alertDisplay.gameObject.SetActive(true);
+        alertDisplay.CrossFadeAlpha(0f, 4f, false);
+        alertDisplay.text = ("ERROR: PLEASE SELECT A " + errorType);
+
+        yield return new WaitForSeconds(4f);
+
+        alertDisplay.gameObject.SetActive(false);
     }
 
 }

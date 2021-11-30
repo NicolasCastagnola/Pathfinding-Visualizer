@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,12 +12,18 @@ public class PriorityQueue<T>
         if (!_allNodes.ContainsKey(node)) _allNodes.Add(node, cost);
 
         else _allNodes.Add(node, cost);
-
     }
-
     public int Count()
     {
         return _allNodes.Count;
+    }
+    public List<T> ReturnDictionaryToList()
+    {
+        List<T> l = new List<T>();
+
+        l = _allNodes.Keys.ToList();
+
+        return l;
     }
 
     public void Clear()
