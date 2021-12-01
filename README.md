@@ -10,3 +10,6 @@
 
 ## Reference:
 - [Redblobgames Pathfinding](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
+- [Chapter 5.4 Artificial Intelligence: Pathfinding](https://www.sci.brooklyn.cuny.edu/~meyer/CISC3600/Materials/5_4AIPathfinding.pdf)
+
+
