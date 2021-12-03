@@ -59,11 +59,10 @@ public class Pathfinding
 
                 if (!cameFrom.ContainsKey(item))
                 {
-                    break;
-                    //frontier.Push(item);
-                    //cameFrom.Add(item, current);
-                    //item.GetComponent<Renderer>().material.color = Color.blue;
-                    //AudioManager.Instance.PlayAudio(Utils.Heuristic(item.transform.position, targetNode.transform.position));
+                    
+                    frontier.Push(item);
+                    cameFrom.Add(item, current);
+                    AudioManager.Instance.PlayAudio(Utils.Heuristic(item.transform.position, targetNode.transform.position));
                 }
             }
 
