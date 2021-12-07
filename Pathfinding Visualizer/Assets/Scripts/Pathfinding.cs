@@ -53,13 +53,12 @@ public class Pathfinding
             yield return new WaitForSeconds(time);
 
 
-            foreach (var item in current.GetAdjacentNeightbours())
+            foreach (var item in current.GetAdjacentNeightbours().Where(n => !cameFrom.ContainsKey(n)))
             {
                 if (!item.isWalkable) continue;
 
-                if (!cameFrom.ContainsKey(item))
+                else
                 {
-                    
                     frontier.Push(item);
                     cameFrom.Add(item, current);
                     AudioManager.Instance.PlayAudio(Utils.Heuristic(item.transform.position, targetNode.transform.position));
@@ -222,6 +221,8 @@ public class Pathfinding
 
         while (frontier.Count() > 0)
         {
+            GameManager.Instance.iterations++;
+
             Node current = frontier.Get();
 
             current.UpdateNodeCost(targetNode, startingNode);
@@ -230,7 +231,6 @@ public class Pathfinding
             {
                 current.GetComponent<Renderer>().material.color = Color.green;
             }
-
 
             yield return new WaitForSeconds(time);
 
@@ -252,53 +252,54 @@ public class Pathfinding
 
                     if (current == targetNode)
                     {
-                        path.Reverse();
                         GameManager.Instance.StopLoopAndDrawPath(path, Color.cyan);
                     }
                 }
             }
 
-            foreach (var next in current.GetNeighbours())
+            foreach (var next in current.GetNeighbours().Where(n => !costSoFar.ContainsKey(n)))
             {
-                GameManager.Instance.iterations++;
 
                 if (!next.isWalkable) continue;
 
-                int newCost = costSoFar[current] + next.gCost;
-
-                foreach (var item in costSoFar)
-                {
-                    item.Key.GetComponent<Renderer>().material.color = Color.gray;
-                }
-
-                foreach (var item in frontier.ReturnDictionaryToList())
-                {
-                    item.GetComponent<Renderer>().material.color = Color.blue;
-                }
+                int newCost = costSoFar[current] + Utils.ManhattanDistance(current, next);
 
                 if (current != targetNode)
                 {
-                    if (!costSoFar.ContainsKey(next))
+                    foreach (var item in costSoFar)
+                    {
+                        item.Key.GetComponent<Renderer>().material.color = Color.gray;
+                    }
+
+                    foreach (var item in frontier.ReturnDictionaryToList())
+                    {
+                        item.GetComponent<Renderer>().material.color = Color.blue;
+                    }
+                }
+                
+                if (!costSoFar.ContainsKey(next))
+                {
+                    int priority = newCost + Utils.Heuristic(targetNode.transform.position, next.transform.position);
+
+                    frontier.Put(next, priority);
+                    cameFrom.Add(next, current);
+                    costSoFar.Add(next, newCost);
+                }
+                else
+                {
+                    if (newCost < costSoFar[next])
                     {
                         int priority = newCost + Utils.Heuristic(targetNode.transform.position, next.transform.position);
 
                         frontier.Put(next, priority);
-                        cameFrom.Add(next, current);
-                        costSoFar.Add(next, newCost);
+                        cameFrom[next] = current;
+                        costSoFar[next] = newCost;
                     }
-                    else
-                    {
-                        if (newCost < costSoFar[next])
-                        {
-                            int priority = newCost + Utils.Heuristic(targetNode.transform.position, next.transform.position);
-                            frontier.Put(next, priority);
-                            cameFrom[next] = current;
-                            costSoFar[next] = newCost;
-                        }
 
-                        current.GetComponent<Renderer>().material.color = Color.gray;
-                    }
+                    current.GetComponent<Renderer>().material.color = Color.gray;
                 }
+
+                AudioManager.Instance.PlayAudio(Utils.Heuristic(current.transform.position, targetNode.transform.position));
             }
         }
     }

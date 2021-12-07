@@ -19,11 +19,7 @@ public class PriorityQueue<T>
     }
     public List<T> ReturnDictionaryToList()
     {
-        List<T> l = new List<T>();
-
-        l = _allNodes.Keys.ToList();
-
-        return l;
+        return _allNodes.Keys.ToList();
     }
 
     public void Clear()

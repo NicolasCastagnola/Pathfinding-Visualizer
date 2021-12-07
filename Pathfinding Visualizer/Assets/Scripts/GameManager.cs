@@ -14,9 +14,13 @@ public class GameManager : MonoBehaviour
 
     public Grid gridScript;
 
+    public Button[] buttons;
+
     private Node startingNode;
     private Node targetNode;
     private Node obstacleNode;
+
+
 
     [HideInInspector] public HashSet<Node> ClosedSet = new HashSet<Node>();
 
@@ -124,7 +128,25 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(_pathfinding.GreedyFirstSearch(startingNode, targetNode, debugTime)); 
                 break;
         }
+
+        SetButtonsToOFF();
     }
+    public void SetButtonsToON()
+    {
+        foreach (var item in buttons)
+        {
+            item.interactable = true;
+        }
+    }
+
+    public void SetButtonsToOFF()
+    {
+        foreach (var item in buttons)
+        {
+            item.interactable = false;
+        }
+    }
+
 
     public void SetTargetNode(Node node)
     {
@@ -169,13 +191,18 @@ public class GameManager : MonoBehaviour
     public void StopLoopAndDrawPath(List<Node> path, Color color)
     {
         StopAllCoroutines();
-        StartCoroutine(DrawPath(path,color));
+        StartCoroutine(DrawPath(path, color));
     }
     public IEnumerator DrawPath(List<Node> path, Color color)
     {
+        if (startingNode != null || targetNode != null)
+        {
+            ChangeColor(startingNode.gameObject, Color.green);
+            ChangeColor(targetNode.gameObject, Color.red);
+        }
+
         foreach (var item in gridScript.ReturnAllGridToList())
         {
-            
             if(item != targetNode && item !=startingNode && item.isWalkable) 
                 ChangeColor(item.gameObject, Color.white);
         }
@@ -184,14 +211,13 @@ public class GameManager : MonoBehaviour
 
         foreach (var item in path)
         {
+            yield return new WaitForSeconds(0.1f);
+
             ChangeColor(item.gameObject, color);
         }
 
-        if (startingNode != null || targetNode != null)
-        {
-            ChangeColor(startingNode.gameObject, Color.green);
-            ChangeColor(targetNode.gameObject, Color.red);
-        }
+
+        SetButtonsToON();
     }
 
     IEnumerator TriggerErrorText(string errorType)

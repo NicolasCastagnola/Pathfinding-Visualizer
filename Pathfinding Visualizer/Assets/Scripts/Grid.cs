@@ -71,10 +71,10 @@ public class Grid : MonoBehaviour
         Vector2Int up = new Vector2Int(x, y + 1);
         Vector2Int down = new Vector2Int(x, y - 1);
 
-        if (InBounds(up)) nodes.Add(grid[up.x, up.y]);
-        if (InBounds(right)) nodes.Add(grid[right.x, right.y]);
-        if (InBounds(down)) nodes.Add(grid[down.x, down.y]);
+        if (InBounds(up) && !InBounds(left)) nodes.Add(grid[up.x, up.y]);
         if (InBounds(left)) nodes.Add(grid[left.x, left.y]);
+        if (InBounds(down)) nodes.Add(grid[down.x, down.y]);
+        if (InBounds(right)) nodes.Add(grid[right.x, right.y]);
 
         return nodes;
     }
@@ -117,9 +117,9 @@ public class Grid : MonoBehaviour
 
 
         if (InBounds(up)) nodes.Add(grid[up.x, up.y]);
-        if (InBounds(right)) nodes.Add(grid[right.x, right.y]);
-        if (InBounds(down)) nodes.Add(grid[down.x, down.y]);
         if (InBounds(left)) nodes.Add(grid[left.x, left.y]);
+        if (InBounds(down)) nodes.Add(grid[down.x, down.y]);
+        if (InBounds(right)) nodes.Add(grid[right.x, right.y]);
 
         return nodes;
     }
@@ -154,6 +154,6 @@ public class Grid : MonoBehaviour
             }
         }
 
-        return nodes;
+        return nodes.ToList();
     }
 }
