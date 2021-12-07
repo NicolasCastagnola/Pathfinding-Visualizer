@@ -7,7 +7,7 @@
 -  Breadth First Search.
 -  A Star Search.
 -  Dijkstra Search.
--  Greedy Best First.
+-  Greedy Best First Search.
 
 ## Reference:
 - [Redblobgames Pathfinding](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
