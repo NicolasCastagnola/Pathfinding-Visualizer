@@ -7,7 +7,7 @@ public class Node : MonoBehaviour
     public Vector2Int posInGrid = new Vector2Int();
     public Grid m_NodeGrid;
     public bool isWalkable = true;
-    public int gCost = 1;
+    [HideInInspector] public int gCost = 1;
     [HideInInspector] public int hCost = 1;
     [HideInInspector] public int fCost => hCost + gCost;
 
@@ -45,9 +45,30 @@ public class Node : MonoBehaviour
 
         return _neighbors;
     }
+
+    private void OnMouseDown()
+    {
+        if (GameManager.Instance.canSelect)
+        {
+            if (this == GameManager.Instance.startingNode) 
+                GameManager.Instance.nodesType = NodesType.Starting;
+
+            if (this == GameManager.Instance.targetNode) 
+                GameManager.Instance.nodesType = NodesType.Target;
+
+            if (this != GameManager.Instance.targetNode && this != GameManager.Instance.startingNode)
+                GameManager.Instance.nodesType = isWalkable ?  NodesType.Obstacle : NodesType.Walkable;
+        }
+    }
+
+    private void OnMouseUp()
+    {
+        GameManager.Instance.nodesType = NodesType.None;
+    }
+
     private void OnMouseOver()
     {
-        if (Input.GetMouseButton(0))
+        if (GameManager.Instance.isRunning)
         {
             switch (GameManager.Instance.nodesType)
             {

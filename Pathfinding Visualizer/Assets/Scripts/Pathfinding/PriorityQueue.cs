@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
-using UnityEngine;
-
 public class PriorityQueue<T>
 {
     Dictionary<T, int> _allNodes = new Dictionary<T, int>();

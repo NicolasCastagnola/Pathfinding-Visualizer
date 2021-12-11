@@ -164,6 +164,8 @@ public class Pathfinding
                     item.Key.GetComponent<Renderer>().material.color = Color.white;
                 }
 
+                current.GetComponent<Renderer>().material.color = Color.white;
+
                 List<Node> path = new List<Node>();
                 path.Add(current);
                 Node next = cameFrom[current];
@@ -225,13 +227,6 @@ public class Pathfinding
 
             Node current = frontier.Get();
 
-            current.UpdateNodeCost(targetNode, startingNode);
-
-            if (current != targetNode)
-            {
-                current.GetComponent<Renderer>().material.color = Color.green;
-            }
-
             yield return new WaitForSeconds(time);
 
             if (current == targetNode)
@@ -252,6 +247,7 @@ public class Pathfinding
 
                     if (current == targetNode)
                     {
+                        path.Reverse();
                         GameManager.Instance.StopLoopAndDrawPath(path, Color.cyan);
                     }
                 }
@@ -259,13 +255,13 @@ public class Pathfinding
 
             foreach (var next in current.GetNeighbours().Where(n => !costSoFar.ContainsKey(n)))
             {
-
                 if (!next.isWalkable) continue;
 
                 int newCost = costSoFar[current] + Utils.ManhattanDistance(current, next);
 
                 if (current != targetNode)
                 {
+
                     foreach (var item in costSoFar)
                     {
                         item.Key.GetComponent<Renderer>().material.color = Color.gray;
@@ -284,9 +280,13 @@ public class Pathfinding
                     frontier.Put(next, priority);
                     cameFrom.Add(next, current);
                     costSoFar.Add(next, newCost);
+
+                    GameManager.Instance.ChangeColor(current.gameObject, Color.green);
                 }
                 else
                 {
+                    GameManager.Instance.ChangeColor(current.gameObject, Color.green);
+
                     if (newCost < costSoFar[next])
                     {
                         int priority = newCost + Utils.Heuristic(targetNode.transform.position, next.transform.position);
@@ -295,8 +295,6 @@ public class Pathfinding
                         cameFrom[next] = current;
                         costSoFar[next] = newCost;
                     }
-
-                    current.GetComponent<Renderer>().material.color = Color.gray;
                 }
 
                 AudioManager.Instance.PlayAudio(Utils.Heuristic(current.transform.position, targetNode.transform.position));
@@ -331,6 +329,8 @@ public class Pathfinding
 
             if (current == targetNode)
             {
+                current.GetComponent<Renderer>().material.color = Color.white;
+
                 foreach (var item in cameFrom)
                 {
                     item.Key.GetComponent<Renderer>().material.color = Color.white;

@@ -1,8 +1,9 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-public enum Algorithm { Depth_First_Search, Bread_First_Search, A_Star, Dijkstra, Greedy_Best_First }
-public enum NodesType { Starting, Target, Obstacle, Walkable}
+public enum Algorithm { DepthxFirstxSearch, BreadxFirstxSearch, AxStarxSearch, DijkstraxSearch, GreedyxBestxFirst }
+public enum NodesType { None, Starting, Target, Obstacle, Walkable}
 
 public class Utils : MonoBehaviour
 {

@@ -8,8 +8,8 @@ public class Grid : MonoBehaviour
 {
     public GameObject nodePrefab;
 
-    public int gridWidth = 20;
-    public int gridHeight = 11;
+    public int gridWidth;
+    public int gridHeight;
 
     private float scale = 1.1f;
 
@@ -34,7 +34,16 @@ public class Grid : MonoBehaviour
                 obj.GetComponent<Node>().posInGrid = new Vector2Int(x, y);
                 obj.GetComponent<Node>().m_NodeGrid = this;
                 grid[x, y] = obj.GetComponent<Node>();
-                    
+
+                if (x == 21 && y == 7)
+                {
+                    GameManager.Instance.SetStartingNode(obj.GetComponent<Node>()); 
+                }
+
+                if (x == 4 && y == 7)
+                {
+                    GameManager.Instance.SetTargetNode(obj.GetComponent<Node>()); 
+                }
             }
         }
     }
@@ -71,7 +80,7 @@ public class Grid : MonoBehaviour
         Vector2Int up = new Vector2Int(x, y + 1);
         Vector2Int down = new Vector2Int(x, y - 1);
 
-        if (InBounds(up) && !InBounds(left)) nodes.Add(grid[up.x, up.y]);
+        if (InBounds(up)) nodes.Add(grid[up.x, up.y]);
         if (InBounds(left)) nodes.Add(grid[left.x, left.y]);
         if (InBounds(down)) nodes.Add(grid[down.x, down.y]);
         if (InBounds(right)) nodes.Add(grid[right.x, right.y]);
@@ -106,20 +115,56 @@ public class Grid : MonoBehaviour
         return nodes;
     }
 
+    #region Single Pole Neighbours
+    public Node ReturnNorthNeighbour(int x, int y)
+    {
+        Vector2Int north = new Vector2Int(x, y + 1);
+
+        if (InBounds(north)) return grid[north.x, north.y];
+
+        return default;
+    }
+    public Node ReturnSouthNeighbour(int x, int y)
+    {
+        Vector2Int south = new Vector2Int(x, y - 1);
+
+        if (InBounds(south)) return grid[south.x, south.y];
+
+        return default;
+    }
+    public Node ReturnEastNeighbour(int x, int y)
+    {
+        Vector2Int east = new Vector2Int(x + 1, y);
+
+        if (InBounds(east)) return grid[east.x, east.y];
+
+        return default;
+    }
+    public Node ReturnWestNeighbour(int x, int y)
+    {
+        Vector2Int west = new Vector2Int(x - 1, y);
+
+        if (InBounds(west)) return grid[west.x, west.y];
+
+        return default;
+    }
+
+    #endregion
+
     public List<Node> ReturnNeightboursBasedInCurrentPosition(int x, int y)
     {
         List<Node> nodes = new List<Node>();
 
-        Vector2Int up = new Vector2Int(x, y + 1);
-        Vector2Int right = new Vector2Int(x + 1, y);
-        Vector2Int down = new Vector2Int(x, y - 1);
-        Vector2Int left = new Vector2Int(x - 1, y);
+        Vector2Int north = new Vector2Int(x, y + 1);
+        Vector2Int east = new Vector2Int(x + 1, y);
+        Vector2Int south = new Vector2Int(x, y - 1);
+        Vector2Int west = new Vector2Int(x - 1, y);
 
 
-        if (InBounds(up)) nodes.Add(grid[up.x, up.y]);
-        if (InBounds(left)) nodes.Add(grid[left.x, left.y]);
-        if (InBounds(down)) nodes.Add(grid[down.x, down.y]);
-        if (InBounds(right)) nodes.Add(grid[right.x, right.y]);
+        if (InBounds(north)) nodes.Add(grid[north.x, north.y]);
+        if (InBounds(east)) nodes.Add(grid[east.x, east.y]);
+        if (InBounds(south)) nodes.Add(grid[south.x, south.y]);
+        if (InBounds(west)) nodes.Add(grid[west.x, west.y]);
 
         return nodes;
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,36 +12,32 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance;
 
     private Pathfinding _pathfinding;
+    private MazeGenerator _mazeGenerator;
 
     public Grid gridScript;
 
     public Button[] buttons;
+    public TMP_Dropdown[] dropdowns;
 
-    private Node startingNode;
-    private Node targetNode;
-    private Node obstacleNode;
+    public Node startingNode;
+    public Node targetNode;
+    public Node obstacleNode;
 
-
-
-    [HideInInspector] public HashSet<Node> ClosedSet = new HashSet<Node>();
+    public bool isRunning;
+    public bool canSelect;
 
     public float debugTime = 1f;
     public int iterations = 0;
 
     public TextMeshProUGUI iterationDisplay;
-    public TextMeshProUGUI buttonText;
-    public TextMeshProUGUI alertDisplay;
-
     private Algorithm algorithmType;
     public NodesType nodesType;
 
     private void Awake()
     {
-        if (_instance != null && _instance != this)
-            Destroy(gameObject);
-
-        else
-            _instance = this;
+        if (_instance != null && _instance != this) Destroy(gameObject);
+            
+        else _instance = this;
     }
 
     private void OnDestroy() 
@@ -51,6 +48,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         _pathfinding = new Pathfinding();
+        _mazeGenerator = new MazeGenerator();
     }
 
     public void SetAlgorimth(Algorithm index)
@@ -64,20 +62,28 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        iterationDisplay.text = "ITERATIONS: " + iterations.ToString();
+        iterationDisplay.text = "ITERATIONS:" + iterations.ToString();
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            StartCoroutine(_mazeGenerator.DepthFirstGeneration(startingNode, targetNode, debugTime));
+        }
     }
 
     public void ResetNodes()
     {
         foreach (Node node in gridScript.ReturnAllGridToList())
         {
-            if (!node.isWalkable || !node == startingNode || !node == targetNode)
+            if (!node.isWalkable || !node == startingNode || !node == targetNode && node.GetComponent<Renderer>().material.color != Color.white)
             {
                 ChangeColor(node.gameObject, Color.white);
                 node.isWalkable = true;
             }
         }
     }
+
+    
+
     public void RunSelectedAlgorithm()
     {
         iterations = 0;
@@ -95,53 +101,50 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        else
-        {
-            if (startingNode == null)
-            {
-                StartCoroutine(TriggerErrorText("STARTING NODE"));
-                return;
-            }
-
-            if (targetNode == null)
-            {
-                StartCoroutine(TriggerErrorText("TARGET NODE"));
-                return;
-            }
-        }
-
         switch (algorithmType)
         {
-            case Algorithm.Depth_First_Search:
+            case Algorithm.DepthxFirstxSearch:
                 StartCoroutine(_pathfinding.DepthFirstSearch(startingNode, targetNode, debugTime));
                 break;
-            case Algorithm.Bread_First_Search:
+            case Algorithm.BreadxFirstxSearch:
                 StartCoroutine(_pathfinding.BreadthFirstSearch(startingNode, targetNode, debugTime));
                 break;
-            case Algorithm.A_Star:
+            case Algorithm.AxStarxSearch:
                 StartCoroutine(_pathfinding.AStar(startingNode, targetNode, debugTime)); 
                 break;
-            case Algorithm.Dijkstra:
+            case Algorithm.DijkstraxSearch:
                 StartCoroutine(_pathfinding.Dijkstra(startingNode, targetNode, debugTime));
                 break;
-            case Algorithm.Greedy_Best_First:
+            case Algorithm.GreedyxBestxFirst:
                 StartCoroutine(_pathfinding.GreedyFirstSearch(startingNode, targetNode, debugTime)); 
                 break;
         }
 
-        SetButtonsToOFF();
+        OnRunninEnded();
     }
-    public void SetButtonsToON()
+    public void OnStartRunning()
     {
+        isRunning = true;
+        
         foreach (var item in buttons)
+        {
+            item.interactable = true;
+        }
+        foreach (var item in dropdowns)
         {
             item.interactable = true;
         }
     }
 
-    public void SetButtonsToOFF()
+    public void OnRunninEnded()
     {
+        isRunning = false;
+
         foreach (var item in buttons)
+        {
+            item.interactable = false;
+        }
+        foreach (var item in dropdowns)
         {
             item.interactable = false;
         }
@@ -157,15 +160,21 @@ public class GameManager : MonoBehaviour
 
     public void SetWalkableNode(Node node)
     {
-        node.isWalkable = true;
-        ChangeColor(node.gameObject, Color.white);
+        if (node != startingNode && node != targetNode)
+        {
+            node.isWalkable = true;
+            ChangeColor(node.gameObject, Color.white);
+        }
+
     }
     public void SetObstacleNode(Node node)
     {
-        obstacleNode = node;
-        node.isWalkable = false;
-        ClosedSet.Add(node);
-        ChangeColor(node.gameObject, Color.black);
+        if (node != startingNode && node != targetNode)
+        {
+            obstacleNode = node;
+            node.isWalkable = false;
+            ChangeColor(node.gameObject, Color.black);
+        }
     }
 
     public void SetStartingNode(Node node)
@@ -195,11 +204,6 @@ public class GameManager : MonoBehaviour
     }
     public IEnumerator DrawPath(List<Node> path, Color color)
     {
-        if (startingNode != null || targetNode != null)
-        {
-            ChangeColor(startingNode.gameObject, Color.green);
-            ChangeColor(targetNode.gameObject, Color.red);
-        }
 
         foreach (var item in gridScript.ReturnAllGridToList())
         {
@@ -211,24 +215,15 @@ public class GameManager : MonoBehaviour
 
         foreach (var item in path)
         {
-            yield return new WaitForSeconds(0.1f);
-
             ChangeColor(item.gameObject, color);
         }
 
+        if (startingNode != null || targetNode != null)
+        {
+            ChangeColor(startingNode.gameObject, Color.green);
+            ChangeColor(targetNode.gameObject, Color.red);
+        }
 
-        SetButtonsToON();
+        OnStartRunning();
     }
-
-    IEnumerator TriggerErrorText(string errorType)
-    {
-        alertDisplay.gameObject.SetActive(true);
-        alertDisplay.CrossFadeAlpha(0f, 4f, false);
-        alertDisplay.text = ("ERROR: PLEASE SELECT A " + errorType);
-
-        yield return new WaitForSeconds(4f);
-
-        alertDisplay.gameObject.SetActive(false);
-    }
-
 }
