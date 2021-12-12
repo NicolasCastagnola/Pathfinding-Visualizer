@@ -1,13 +1,16 @@
  # Visualize Pathfinding Algorithms
 
-![Capture](https://user-images.githubusercontent.com/49046616/143917920-d3c541db-25f5-4e94-80f1-50f9c8128bde.PNG)
+![Captureeqwe](https://user-images.githubusercontent.com/49046616/145692973-1ea66517-1db0-4801-9d00-b697ff04cbb2.PNG)
 
-## Algorithms Available:
+## Pathfinding Algorithms Available:
 -  Depth First Search.
 -  Breadth First Search.
 -  A Star Search.
 -  Dijkstra Search.
 -  Greedy Best First Search.
+
+## Maze Generation Algorithms Available:
+-  Depth First Search[WIP].
 
 ## Reference:
 - [Redblobgames Pathfinding](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
