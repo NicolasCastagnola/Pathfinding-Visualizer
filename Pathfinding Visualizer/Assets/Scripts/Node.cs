@@ -68,7 +68,7 @@ public class Node : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (GameManager.Instance.isRunning)
+        if (!GameManager.Instance.isRunning)
         {
             switch (GameManager.Instance.nodesType)
             {

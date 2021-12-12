@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Maze { DFS }
+public enum Maze { KruskalxAlgorithm, PrimsxAlgorithm, RecursivexDivision, RecursivexBacktracking, BinaryxTree }
 public class MazeGenerator
 {
     public void GenerateMaze()

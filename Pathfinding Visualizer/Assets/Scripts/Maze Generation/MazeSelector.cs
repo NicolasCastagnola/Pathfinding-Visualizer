@@ -1,9 +1,10 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System.Linq;
-public class AlgorithmSelector : MonoBehaviour
+using System;
+
+public class MazeSelector : MonoBehaviour
 {
     private TMP_Dropdown dropdown;
     private void Start()
@@ -14,12 +15,13 @@ public class AlgorithmSelector : MonoBehaviour
 
     public void OnDropdownValueSelected()
     {
-        Algorithm selectedAlgorithm = (Algorithm)dropdown.value;
-        GameManager.Instance.SetPathfindingAlgorithm(selectedAlgorithm);
+        Maze selectedAlgorithm = (Maze)dropdown.value;
+
+        //GameManager.Instance.SetAlgorimth(selectedAlgorithm);
     }
     private List<string> FormatList()
     {
-        string[] types = Enum.GetNames(typeof(Algorithm));
+        string[] types = Enum.GetNames(typeof(Maze));
         List<string> names = new List<string>(types);
 
         List<string> returnList = new List<string>();

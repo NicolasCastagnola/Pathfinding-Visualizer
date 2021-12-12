@@ -51,10 +51,16 @@ public class GameManager : MonoBehaviour
         _mazeGenerator = new MazeGenerator();
     }
 
-    public void SetAlgorimth(Algorithm index)
+    public void SetPathfindingAlgorithm(Algorithm index)
     {
         algorithmType = index;
     }
+
+    public void SetMazeAlgorithmAlgorimth(Algorithm index)
+    {
+        algorithmType = index;
+    }
+
 
     public void SetNode(NodesType index)
     {
@@ -74,15 +80,22 @@ public class GameManager : MonoBehaviour
     {
         foreach (Node node in gridScript.ReturnAllGridToList())
         {
-            if (!node.isWalkable || !node == startingNode || !node == targetNode && node.GetComponent<Renderer>().material.color != Color.white)
+            if (node != startingNode && node != targetNode)
             {
                 ChangeColor(node.gameObject, Color.white);
                 node.isWalkable = true;
             }
+
+            else
+            {
+                if (startingNode != null || targetNode != null)
+                {
+                    ChangeColor(startingNode.gameObject, Color.green);
+                    ChangeColor(targetNode.gameObject, Color.red);
+                }
+            }
         }
     }
-
-    
 
     public void RunSelectedAlgorithm()
     {
@@ -120,11 +133,13 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        OnRunninEnded();
+
+
+        LockUI();
     }
-    public void OnStartRunning()
+    public void UnlockUI()
     {
-        isRunning = true;
+        isRunning = false;
         
         foreach (var item in buttons)
         {
@@ -136,9 +151,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void OnRunninEnded()
+    public void LockUI()
     {
-        isRunning = false;
+        isRunning = true;
 
         foreach (var item in buttons)
         {
@@ -224,6 +239,6 @@ public class GameManager : MonoBehaviour
             ChangeColor(targetNode.gameObject, Color.red);
         }
 
-        OnStartRunning();
+        UnlockUI();
     }
 }
