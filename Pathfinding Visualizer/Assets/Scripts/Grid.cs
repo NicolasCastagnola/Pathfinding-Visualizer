@@ -31,7 +31,7 @@ public class Grid : MonoBehaviour
                 Vector3 tempPos = new Vector3(x * scale, y * scale, 0);
                 obj.transform.position = tempPos;
                 obj.transform.SetParent(transform);
-                obj.GetComponent<Node>().posInGrid = new Vector2Int(x, y);
+                obj.GetComponent<Node>().thisNodePositionInGrid = new Vector2Int(x, y);
                 obj.GetComponent<Node>().m_NodeGrid = this;
                 grid[x, y] = obj.GetComponent<Node>();
 
@@ -75,15 +75,23 @@ public class Grid : MonoBehaviour
     public List<Node> ReturnAdjacentsNieghtboursBasedInPostion(int x, int y)
     {
         List<Node> nodes = new List<Node>();
-        Vector2Int left = new Vector2Int(x - 1, y);
-        Vector2Int right = new Vector2Int(x + 1, y);
-        Vector2Int up = new Vector2Int(x, y + 1);
-        Vector2Int down = new Vector2Int(x, y - 1);
 
-        if (InBounds(up)) nodes.Add(grid[up.x, up.y]);
-        if (InBounds(left)) nodes.Add(grid[left.x, left.y]);
-        if (InBounds(down)) nodes.Add(grid[down.x, down.y]);
-        if (InBounds(right)) nodes.Add(grid[right.x, right.y]);
+        Vector2Int north = new Vector2Int(x, y + 1);
+        Vector2Int east = new Vector2Int(x + 1, y);
+        Vector2Int south = new Vector2Int(x, y - 1);
+        Vector2Int west = new Vector2Int(x - 1, y);
+
+
+        if (InBounds(north)) nodes.Add(grid[north.x, north.y]); 
+        if (InBounds(east)) nodes.Add(grid[east.x, east.y]);
+        if (InBounds(south)) nodes.Add(grid[south.x, south.y]);
+        if (InBounds(west)) nodes.Add(grid[west.x, west.y]);
+
+        if (nodes.Count == 1)
+        {
+            ReturnAdjacentsNieghtboursBasedInPostion(x, y);
+            Debug.Log(nodes.Count);
+        }
 
         return nodes;
     }

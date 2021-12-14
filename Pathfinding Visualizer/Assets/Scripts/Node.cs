@@ -3,18 +3,38 @@ using UnityEngine;
 using TMPro;
 public class Node : MonoBehaviour
 {
-    private List<Node> _neighbors = new List<Node>();
-    public Vector2Int posInGrid = new Vector2Int();
-    public Grid m_NodeGrid;
-    public bool isWalkable = true;
-    [HideInInspector] public int gCost = 1;
-    [HideInInspector] public int hCost = 1;
-    [HideInInspector] public int fCost => hCost + gCost;
 
-    [Header("Display")]
+    [Header("Grid Stuff")]
+    public Vector2Int thisNodePositionInGrid = new Vector2Int();
+    public Grid m_NodeGrid;
+    private List<Node> _neighborsFromThisNode = new List<Node>();
+
+    [Header("Flags")]
+    public bool isWalkable = true;
+    public bool isConnected;
+
+    [Header("CurrentNeightBours")]
+    public Node northNode;
+    public Node westNode;
+    public Node southNode;
+    public Node eastNode;
+
+    [Header("Cost")]
     public TextMeshPro gCostDisplay;
     public TextMeshPro hCostDisplay;
     public TextMeshPro fCostDisplay;
+    [HideInInspector] public int fCost => hCost + gCost;
+    [HideInInspector] public int gCost = 1;
+    [HideInInspector] public int hCost = 1;
+
+
+    public void Start()
+    {
+        northNode = m_NodeGrid?.ReturnNorthNeighbour(thisNodePositionInGrid.x, thisNodePositionInGrid.y);
+        westNode = m_NodeGrid?.ReturnWestNeighbour(thisNodePositionInGrid.x, thisNodePositionInGrid.y);
+        southNode = m_NodeGrid?.ReturnSouthNeighbour(thisNodePositionInGrid.x, thisNodePositionInGrid.y);
+        eastNode = m_NodeGrid?.ReturnEastNeighbour(thisNodePositionInGrid.x, thisNodePositionInGrid.y);
+    }
 
     public void UpdateNodeCost(Node targetNode, Node startingNode)
     {
@@ -25,25 +45,24 @@ public class Node : MonoBehaviour
         fCostDisplay.text = fCost.ToString("0");
     }
 
-
     public List<Node> GetNeighbours()
     {
-        if (_neighbors.Count == 0)
+        if (_neighborsFromThisNode.Count == 0)
         {
-            _neighbors = m_NodeGrid?.ReturnNeightboursBasedInCurrentPosition(posInGrid.x, posInGrid.y);
+            _neighborsFromThisNode = m_NodeGrid?.ReturnNeightboursBasedInCurrentPosition(thisNodePositionInGrid.x, thisNodePositionInGrid.y);
         }
 
-        return _neighbors;
+        return _neighborsFromThisNode;
     }
 
     public List<Node> GetAdjacentNeightbours()
     {
-        if (_neighbors.Count == 0)
+        if (_neighborsFromThisNode.Count == 0)
         {
-            _neighbors = m_NodeGrid?.ReturnAdjacentsNieghtboursBasedInPostion(posInGrid.x, posInGrid.y);
+            _neighborsFromThisNode = m_NodeGrid?.ReturnAdjacentsNieghtboursBasedInPostion(thisNodePositionInGrid.x, thisNodePositionInGrid.y);
         }
 
-        return _neighbors;
+        return _neighborsFromThisNode;
     }
 
     private void OnMouseDown()

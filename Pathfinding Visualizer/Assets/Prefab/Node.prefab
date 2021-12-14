@@ -122,14 +122,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5903e14ea7332b44196a8508b9c5d1a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  posInGrid: {x: 0, y: 0}
+  thisNodePositionInGrid: {x: 0, y: 0}
   m_NodeGrid: {fileID: 0}
   isWalkable: 1
-  gCost: 1
-  hCost: 0
+  isConnected: 0
   gCostDisplay: {fileID: 6803626418210805061}
   hCostDisplay: {fileID: 1450155712698282742}
   fCostDisplay: {fileID: 1566971613640696673}
+  gCost: 1
+  hCost: 1
 --- !u!1001 &1450155712705429942
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.K))
         {
-            StartCoroutine(_mazeGenerator.DepthFirstGeneration(startingNode, targetNode, debugTime));
+            _mazeGenerator.RecursiveBacktracking(gridScript.ReturnAllGridToList(),gridScript.grid[0,0],startingNode, targetNode, debugTime);
         }
     }
 

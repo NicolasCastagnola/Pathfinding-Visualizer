@@ -14,7 +14,7 @@ public class Utils : MonoBehaviour
 
     public static int ManhattanDistance(Node current, Node target)
     {
-        return Mathf.Abs(current.posInGrid.x - target.posInGrid.x) + Mathf.Abs(current.posInGrid.y - target.posInGrid.y);
+        return Mathf.Abs(current.thisNodePositionInGrid.x - target.thisNodePositionInGrid.x) + Mathf.Abs(current.thisNodePositionInGrid.y - target.thisNodePositionInGrid.y);
     }
 
     public static bool InSight(Vector3 start, Vector3 end, LayerMask mask)

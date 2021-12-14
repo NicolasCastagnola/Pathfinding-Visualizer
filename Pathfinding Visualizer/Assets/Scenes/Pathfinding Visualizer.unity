@@ -1431,7 +1431,7 @@ MonoBehaviour:
   startingNode: {fileID: 0}
   targetNode: {fileID: 0}
   obstacleNode: {fileID: 0}
-  isRunning: 1
+  isRunning: 0
   canSelect: 1
   debugTime: 0.1
   iterations: 0
