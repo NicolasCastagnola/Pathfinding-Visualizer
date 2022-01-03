@@ -1,6 +1,6 @@
  # Visualize Pathfinding Algorithms
 
-![Captureeqwe](https://user-images.githubusercontent.com/49046616/145692973-1ea66517-1db0-4801-9d00-b697ff04cbb2.PNG)
+![dsadsadas](https://user-images.githubusercontent.com/49046616/147902251-6d9f27c6-737e-4512-bb80-6a4b62a1c38c.PNG)
 
 ## Pathfinding Algorithms Available:
 -  Depth First Search.
