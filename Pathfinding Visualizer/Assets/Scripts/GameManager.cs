@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance;
 
     private Pathfinding _pathfinding;
-    private MazeGenerator _mazeGenerator;
 
     public Grid gridScript;
 
@@ -48,7 +47,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         _pathfinding = new Pathfinding();
-        _mazeGenerator = new MazeGenerator();
     }
 
     public void SetPathfindingAlgorithm(Algorithm index)
@@ -69,11 +67,6 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         iterationDisplay.text = "ITERATIONS:" + iterations.ToString();
-
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            _mazeGenerator.RecursiveBacktracking(gridScript.ReturnAllGridToList(),gridScript.grid[0,0],startingNode, targetNode, debugTime);
-        }
     }
 
     public void ResetNodes()

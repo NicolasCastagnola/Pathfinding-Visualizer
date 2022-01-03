@@ -369,6 +369,7 @@ public class Pathfinding
                         frontier.Put(next, newCost);
                         cameFrom.Add(next, current);
                         costSoFar.Add(next, newCost);
+                        AudioManager.Instance.PlayAudio(Utils.Heuristic(next.transform.position, targetNode.transform.position));
                     }
                     else
                     {
