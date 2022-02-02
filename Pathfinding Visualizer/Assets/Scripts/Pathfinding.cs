@@ -363,9 +363,10 @@ public class Pathfinding
 
                 if (current != targetNode)
                 {
+                    next.GetComponent<Renderer>().material.color = Color.blue;
+                    
                     if (!costSoFar.ContainsKey(next) && current != targetNode)
                     {
-                        next.GetComponent<Renderer>().material.color = Color.blue;  
                         frontier.Put(next, newCost);
                         cameFrom.Add(next, current);
                         costSoFar.Add(next, newCost);
